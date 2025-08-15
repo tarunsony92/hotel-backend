@@ -69,14 +69,14 @@ cron.schedule("* * * * *", () => {
 
   db.query(releaseRoomsSql, (err, result) => {
     if (err) {
-      console.error("❌ Auto-release (rooms) failed:", err);
+      // console.error("❌ Auto-release (rooms) failed:", err);
       return;
     }
 
     if (result.affectedRows > 0) {
       console.log(`✅ ${result.affectedRows} rooms made available.`);
     } else {
-      console.log("ℹ No rooms to release right now.");
+      // console.log("ℹ No rooms to release right now.");
     }
   });
 });
