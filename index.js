@@ -55,7 +55,7 @@ app.use("/api/bookings", bookingRoutes);
 // 🔹 Auto-release Cron Job (runs every minute)
 // ====================
 cron.schedule("* * * * *", () => {
-  console.log("⏳ Auto-release job running...");
+  // console.log("⏳ Auto-release job running...");
 
   const releaseRoomsSql = `
     UPDATE rooms r
@@ -74,7 +74,7 @@ cron.schedule("* * * * *", () => {
     }
 
     if (result.affectedRows > 0) {
-      console.log(`✅ ${result.affectedRows} rooms made available.`);
+      // console.log(`✅ ${result.affectedRows} rooms made available.`);
     } else {
       // console.log("ℹ No rooms to release right now.");
     }
