@@ -7,15 +7,44 @@ const db = require("./db"); // MySQL connection
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// ====================
+// 🔹 CORS config
+// ====================
+// Local development
+const allowedOrigins = [
+  "http://localhost:3000", // React local
+  "https://your-frontend-domain.com" // Production frontend
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// ====================
+// 🔹 JSON body parser
+// ====================
 app.use(express.json());
 
-// Default route
+// ====================
+// 🔹 Default route
+// ====================
 app.get("/", (req, res) => {
   res.send("API Running with MySQL");
 });
 
-// Routes
+// ====================
+// 🔹 Routes
+// ====================
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
@@ -23,37 +52,38 @@ const bookingRoutes = require("./routes/bookings");
 app.use("/api/bookings", bookingRoutes);
 
 // ====================
-// 🔹 Auto-release Cron Job
+// 🔹 Auto-release Cron Job (runs every minute)
 // ====================
 cron.schedule("* * * * *", () => {
-  // console.log("⏳ Auto-release job running...");
+  console.log("⏳ Auto-release job running...");
 
-  // Step 1: Update rooms whose booking time is expired
   const releaseRoomsSql = `
     UPDATE rooms r
     JOIN bookings b
-      ON FIND_IN_SET(r.roomNumber, REPLACE(b.rooms,' ','')) > 0
+      ON FIND_IN_SET(r.roomNumber, REPLACE(b.rooms,' ',''))
     SET r.status = 'available',
         r.booking_time = NULL,
         r.releaseDateTime = NULL
     WHERE b.releaseDateTime <= NOW();
   `;
 
-  db.query(releaseRoomsSql, (err1, result1) => {
-    if (err1) {
-      console.error("❌ Auto-release (rooms) failed:", err1);
+  db.query(releaseRoomsSql, (err, result) => {
+    if (err) {
+      console.error("❌ Auto-release (rooms) failed:", err);
       return;
     }
 
-    if (result1.affectedRows > 0) {
-      // console.log(`✅ ${result1.affectedRows} rooms made available.`);
+    if (result.affectedRows > 0) {
+      console.log(`✅ ${result.affectedRows} rooms made available.`);
     } else {
       console.log("ℹ No rooms to release right now.");
     }
   });
 });
-// ====================
 
+// ====================
+// 🔹 Start server
+// ====================
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
