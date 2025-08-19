@@ -51,6 +51,10 @@ app.use("/api/auth", authRoutes);
 const bookingRoutes = require("./routes/bookings");
 app.use("/api/bookings", bookingRoutes);
 
+const roomRoutes = require("./routes/rooms");
+app.use("/api/rooms", roomRoutes);
+
+
 // ====================
 // 🔹 Auto-release Cron Job (runs every minute)
 // ====================
