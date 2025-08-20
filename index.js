@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 // Local development
 const allowedOrigins = [
   "http://localhost:3000", // React local
-  "https://hotelbooking-production-6d22.up.railway.app/" // Production frontend
+  "https://hotelbooking-production-6d22.up.railway.app" // Production frontend
 ];
 
 app.use(cors({
