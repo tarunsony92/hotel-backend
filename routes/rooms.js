@@ -3,9 +3,11 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// GET all rooms
+// 🔹 GET /api/rooms - Get all rooms
 router.get("/", (req, res) => {
-  db.query("SELECT * FROM rooms", (err, results) => {
+  const sql = "SELECT roomNumber, status FROM rooms";
+
+  db.query(sql, (err, results) => {
     if (err) {
       console.error("Error fetching rooms:", err);
       return res.status(500).json({ error: "Database error" });

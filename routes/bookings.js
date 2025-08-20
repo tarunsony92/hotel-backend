@@ -52,18 +52,18 @@ router.post('/book', (req, res) => {
 });
 
 // 🔹 GET /api/bookings - Get all room statuses
-router.get('/', (req, res) => {
-  const sql = "SELECT roomNumber, status FROM rooms";
+// router.get('/', (req, res) => {
+//   const sql = "SELECT roomNumber, status FROM rooms";
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error fetching rooms:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       console.error("Error fetching rooms:", err);
+//       return res.status(500).json({ error: "Database error" });
+//     }
 
-    res.json(results);
-  });
-});
+//     res.json(results);
+//   });
+// });
 
 // 🔵 Seller route – Get all bookings
 router.get('/all-bookings', (req, res) => {
