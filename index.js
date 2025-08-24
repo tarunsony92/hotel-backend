@@ -56,34 +56,34 @@ app.use("/api/rooms", roomRoutes);
 
 
 // ====================
+// ====================
 // 🔹 Auto-release Cron Job (runs every minute)
 // ====================
 cron.schedule("* * * * *", () => {
-   console.log("⏳ Auto-release job running...");
+  console.log("⏳ Auto-release job running...");
 
   const releaseRoomsSql = `
     UPDATE rooms r
     JOIN bookings b
-      ON FIND_IN_SET(r.roomNumber, REPLACE(b.rooms,' ',''))
-    SET r.status = 'available',
-        r.booking_time = NULL,
-        r.releaseDateTime = NULL
+      ON FIND_IN_SET(r.roomNumber, REPLACE(b.rooms,' ','')) 
+    SET r.status = 'available'
     WHERE b.releaseDateTime <= NOW();
   `;
 
   db.query(releaseRoomsSql, (err, result) => {
     if (err) {
-       console.error("❌ Auto-release (rooms) failed:", err);
+      console.error("❌ Auto-release (rooms) failed:", err);
       return;
     }
 
     if (result.affectedRows > 0) {
-       console.log(`✅ ${result.affectedRows} rooms made available.`);
+      console.log(`✅ ${result.affectedRows} rooms made available.`);
     } else {
-       console.log("ℹ No rooms to release right now.");
+      console.log("ℹ No rooms to release right now.");
     }
   });
 });
+
 
 // ====================
 // 🔹 Start server
